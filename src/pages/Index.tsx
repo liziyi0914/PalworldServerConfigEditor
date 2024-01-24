@@ -6,6 +6,7 @@ import ini from 'ini';
 import { GithubOutlined, UploadOutlined } from '@ant-design/icons';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import { useIntl } from '@@/exports';
+import { lodash } from '@umijs/utils';
 
 const TEMPLATE = '[/Script/Pal.PalGameWorldSettings]\nOptionSettings=(%)\n';
 const DEFAULT = 'Difficulty=None,DayTimeSpeedRate=1.000000,NightTimeSpeedRate=1.000000,ExpRate=1.000000,PalCaptureRate=1.000000,PalSpawnNumRate=1.000000,PalDamageRateAttack=1.000000,PalDamageRateDefense=1.000000,PlayerDamageRateAttack=1.000000,PlayerDamageRateDefense=1.000000,PlayerStomachDecreaceRate=1.000000,PlayerStaminaDecreaceRate=1.000000,PlayerAutoHPRegeneRate=1.000000,PlayerAutoHpRegeneRateInSleep=1.000000,PalStomachDecreaceRate=1.000000,PalStaminaDecreaceRate=1.000000,PalAutoHPRegeneRate=1.000000,PalAutoHpRegeneRateInSleep=1.000000,BuildObjectDamageRate=1.000000,BuildObjectDeteriorationDamageRate=1.000000,CollectionDropRate=1.000000,CollectionObjectHpRate=1.000000,CollectionObjectRespawnSpeedRate=1.000000,EnemyDropItemRate=1.000000,DeathPenalty=All,bEnablePlayerToPlayerDamage=False,bEnableFriendlyFire=False,bEnableInvaderEnemy=True,bActiveUNKO=False,bEnableAimAssistPad=True,bEnableAimAssistKeyboard=False,DropItemMaxNum=3000,DropItemMaxNum_UNKO=100,BaseCampMaxNum=128,BaseCampWorkerMaxNum=15,DropItemAliveMaxHours=1.000000,bAutoResetGuildNoOnlinePlayers=False,AutoResetGuildTimeNoOnlinePlayers=72.000000,GuildPlayerMaxNum=20,PalEggDefaultHatchingTime=72.000000,WorkSpeedRate=1.000000,bIsMultiplay=False,bIsPvP=False,bCanPickupOtherGuildDeathPenaltyDrop=False,bEnableNonLoginPenalty=True,bEnableFastTravel=True,bIsStartLocationSelectByMap=True,bExistPlayerAfterLogout=False,bEnableDefenseOtherGuildPlayer=False,CoopPlayerMaxNum=4,ServerPlayerMaxNum=32,ServerName="Default Palworld Server",ServerDescription="",AdminPassword="",ServerPassword="",PublicPort=8211,PublicIP="",RCONEnabled=False,RCONPort=25575,Region="",bUseAuth=True,BanListURL="https://api.palworldgame.com/api/banlist.txt"';
@@ -233,6 +234,13 @@ const Page: React.FC = () => {
         title: 'DeathPenalty',
         name: 'DeathPenalty',
         initialValue: 'All',
+        valueType: 'select',
+        valueEnum: {
+          'All': 'All',
+          'Item': 'Item',
+          'ItemAndEquipment': 'ItemAndEquipment',
+          'None': 'None',
+        },
       },
       {
         title: 'bEnablePlayerToPlayerDamage',
@@ -474,6 +482,24 @@ const Page: React.FC = () => {
     for (let i = 0; i < data.length; i++) {
       let item = data[i];
       let title = intl.formatMessage({id: item.name});
+      if (item.valueType === 'select') {
+        let e = data[i]?.valueEnum as Record<string, string>;
+        for (let k in e) {
+          if (!e.hasOwnProperty(k)) {
+            continue;
+          }
+          let v = e?.[k];
+          if (!v) {
+            continue;
+          }
+
+          let s = intl.formatMessage({id:`${item.name}.${k}`});
+          if (s!==v) {
+            e[k] = s;
+          }
+        }
+        data[i]['valueEnum'] = e;
+      }
       if (title!==item.name) {
         data[i].title = title;
         data[i].tooltip = item.name;
@@ -507,6 +533,8 @@ const Page: React.FC = () => {
         }
       } else if (type === 'text') {
         return `${key}="${value}"`;
+      } else if (type === 'select') {
+        return `${key}=${value}`;
       } else {
         return `${key}=${value}`;
       }
@@ -549,6 +577,8 @@ const Page: React.FC = () => {
         values[k] = parseFloat(v).toFixed(6);
       } else if (column.valueType === 'text') {
         values[k] = v.substring(1, v.length - 1);
+      } else if (column.valueType === 'select') {
+        values[k] = v;
       } else {
         values[k] = v;
       }
