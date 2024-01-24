@@ -3,7 +3,7 @@
 
 幻兽帕鲁服务端配置文件编辑器
 
-[Online](https://config.palworld.liziyi0914.com)
+[Online](https://palworld-config.liziyi0914.com)
 
 ## 参考资料
 简体中文 参考 [《Palworld/幻兽帕鲁 服务端配置文件中文注释版》](https://www.bilibili.com/read/cv29818410/)作者：喵云MiaoVPS
