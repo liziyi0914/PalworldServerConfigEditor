@@ -33,6 +33,14 @@ export default defineConfig({
                     y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
                 })(window, document, 'clarity', 'script', 'krcmv2bfkv');`,
     },
+    {
+      content: `var _hmt = _hmt || [];
+                (function() {
+                  var hm = document.createElement("script");
+                  hm.src = "https://hm.baidu.com/hm.js?79210364fa0fc38612744a12fbcb1d42";
+                  var s = document.getElementsByTagName("script")[0]; 
+                  s.parentNode.insertBefore(hm, s);
+                })();`,
+    },
   ],
 });
-
