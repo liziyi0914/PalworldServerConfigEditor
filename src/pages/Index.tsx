@@ -1,9 +1,9 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { App, Button, Form, Input, Upload } from 'antd';
+import { App, Button, Divider, Form, Input, Upload } from 'antd';
 import { BetaSchemaForm } from '@ant-design/pro-components';
 import { ProFormColumnsType } from '@ant-design/pro-form/es/components/SchemaForm/typing';
 import ini from 'ini';
-import { GithubOutlined, UploadOutlined } from '@ant-design/icons';
+import { DownloadOutlined, GithubOutlined, UploadOutlined } from '@ant-design/icons';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import { useIntl } from '@@/exports';
 import { lodash } from '@umijs/utils';
@@ -633,14 +633,31 @@ const Page: React.FC = () => {
               });
             }}
           >粘贴</Button>
+          <div className="flex flex-col justify-center">
+            <Divider type="vertical"/>
+          </div>
           <CopyToClipboard
             text={configText}
             onCopy={()=>message.success('复制成功')}
           >
-            <Button
-              type="primary"
-            >复制</Button>
+            <Button>复制</Button>
           </CopyToClipboard>
+          <Button
+            type="primary"
+            icon={<DownloadOutlined/>}
+            onClick={()=>{
+              let fileName = 'PalWorldSettings.ini';
+              let blob = new Blob([configText]);
+              let downloadElement = document.createElement('a');
+              let href = window.URL.createObjectURL(blob);
+              downloadElement.href = href;
+              downloadElement.download = fileName;
+              document.body.appendChild(downloadElement);
+              downloadElement.click();
+              document.body.removeChild(downloadElement);
+              window.URL.revokeObjectURL(href);
+            }}
+          >下载</Button>
         </div>
         <div>
           <BetaSchemaForm
